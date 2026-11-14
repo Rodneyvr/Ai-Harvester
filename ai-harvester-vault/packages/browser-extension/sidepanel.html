@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RedCoda Harvester Vault</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --primary: #EF4444;
+      --primary-dark: #B91C1C;
+      --bg: #0A0A0A;
+      --surface: #171717;
+      --text: #F8FAFC;
+      --muted: #71717A;
+      --border: #27272A;
+    }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .header {
+      padding: 16px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .logo { width: 32px; height: 32px; border-radius: 6px; }
+    .title { font-size: 17px; font-weight: 700; letter-spacing: -0.5px; }
+    .title .brand { color: var(--primary); }
+    .title .coda { color: var(--text); }
+    .status {
+      margin-left: auto;
+      font-size: 11px;
+      padding: 4px 8px;
+      border-radius: 4px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+    }
+    .status.online { color: #22C55E; border-color: #22C55E; }
+    .status.offline { color: #EF4444; border-color: #EF4444; }
+    .main { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 20px; }
+    .section { display: flex; flex-direction: column; gap: 10px; }
+    .section-title {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      font-weight: 600;
+    }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+    }
+    .btn-group { display: flex; gap: 8px; flex-wrap: wrap; }
+    button {
+      padding: 10px 16px;
+      border: none;
+      border-radius: 6px;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    button.primary { background: var(--primary); color: #FFFFFF; }
+    button.primary:hover { background: var(--primary-dark); }
+    button.outline { background: transparent; color: var(--text); border: 1px solid var(--border); }
+    button.outline:hover { background: var(--surface); }
+    button.secondary { background: var(--surface); color: var(--text); border: 1px solid var(--border); }
+    button.secondary:hover { background: #27272A; }
+    button:disabled { opacity: 0.5; cursor: not-allowed; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th { text-align: left; color: var(--muted); font-weight: 600; padding: 8px 4px; font-size: 11px; text-transform: uppercase; }
+    td { padding: 10px 4px; border-bottom: 1px solid var(--border); }
+    tr:hover { background: #1F1F23; }
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+    .badge-green { background: #22C55E; color: #FFFFFF; }
+    .badge-red { background: #EF4444; color: #FFFFFF; }
+    .badge-gray { background: var(--border); color: var(--text); }
+    .empty { text-align: center; color: var(--muted); padding: 40px 20px; font-size: 13px; }
+    .footer {
+      padding: 16px;
+      border-top: 1px solid var(--border);
+      font-size: 11px;
+      color: var(--muted);
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <img src="../icons/icon-48.svg" alt="RedCoda" class="logo">
+    <div class="title"><span class="brand">RED</span><span class="coda">CODA</span></div>
+    <div id="api-status" class="status offline">OFFLINE</div>
+  </div>
+
+  <div class="main">
+    <div class="section">
+      <div class="section-title">Harvester</div>
+      <div class="card">
+        <div class="btn-group">
+          <button class="primary" id="btn-harvest-current">Harvest This Page</button>
+          <button class="outline" id="btn-open-dashboard">Open Dashboard</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">API Credentials</div>
+      <div class="card">
+        <table id="cred-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Provider</th>
+              <th>Category</th>
+              <th>Environment</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="cred-body">
+            <tr><td colspan="5" class="empty">Loading credentials...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    RedCoda Harvester Vault v1.0.0 &middot; Backend: <span id="backend-url">http://localhost:8000</span>
+  </div>
+
+  <script src="sidepanel.js"></script>
+</body>
+</html>

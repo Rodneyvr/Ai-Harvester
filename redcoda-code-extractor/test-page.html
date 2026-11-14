@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RedCoda Test Page</title>
+  <style>
+    body { font-family: system-ui; max-width: 900px; margin: 0 auto; padding: 20px; background: #0d0d0d; color: #e0e0e0; }
+    .message { border: 1px solid #333; border-radius: 8px; padding: 16px; margin: 16px 0; background: #1a1a1a; }
+    .message-header { display: flex; gap: 12px; margin-bottom: 12px; font-size: 12px; color: #888; }
+    .code-block { position: relative; }
+    .code-block pre { margin: 0; background: #0d0d0d; border: 1px solid #333; border-radius: 6px; padding: 12px; overflow: auto; }
+    .code-block code { font-family: 'JetBrains Mono', monospace; font-size: 13px; line-height: 1.6; color: #e0e0e0; }
+    .code-header { display: flex; justify-content: space-between; padding: 8px 12px; background: #1a1a1a; border-bottom: 1px solid #333; font-size: 12px; }
+    .filename { color: #e53935; font-weight: 600; }
+    .language { color: #888; text-transform: uppercase; font-size: 10px; }
+    .copy-btn { background: transparent; border: 1px solid #333; color: #888; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 11px; }
+    .copy-btn:hover { border-color: #e53935; color: #e53935; }
+    .monaco-editor { border: 1px solid #333; border-radius: 6px; background: #0d0d0d; min-height: 150px; }
+    .view-lines { padding: 12px; }
+    .view-line { font-family: 'JetBrains Mono', monospace; font-size: 13px; line-height: 1.6; color: #e0e0e0; }
+  </style>
+</head>
+<body>
+  <h1>RedCoda Code Extractor - Test Page</h1>
+  <p>Open the extension popup (Alt+Shift+R) to test extraction on this page.</p>
+
+  <!-- Message 1: Regular code block with header -->
+  <div class="message" data-author="ai">
+    <div class="message-header">
+      <span>AI Assistant</span>
+      <span>Just now</span>
+    </div>
+    <div class="code-block">
+      <div class="code-header">
+        <span class="filename">src/utils/api.js</span>
+        <span class="language">javascript</span>
+        <button class="copy-btn">Copy</button>
+      </div>
+      <pre><code class="language-javascript">// src/utils/api.js
+export async function fetchUser(id) {
+  const response = await fetch(\`/api/users/\${id}\`);
+  if (!response.ok) throw new Error('User not found');
+  return response.json();
+}
+
+export function formatUser(user) {
+  return {
+    id: user.id,
+    name: user.name,
+    email: user.email
+  };
+}</code></pre>
+    </div>
+  </div>
+
+  <!-- Message 2: Code block with comment filename -->
+  <div class="message" data-author="ai">
+    <div class="message-header">
+      <span>AI Assistant</span>
+      <span>2 min ago</span>
+    </div>
+    <div class="code-block">
+      <div class="code-header">
+        <span class="filename">components/Button.tsx</span>
+        <span class="language">typescript</span>
+        <button class="copy-btn">Copy</button>
+      </div>
+      <pre><code class="language-typescript">// components/Button.tsx
+import React from 'react';
+
+interface ButtonProps {
+  children: React.ReactNode;
+  onClick?: () => void;
+  variant?: 'primary' | 'secondary';
+}
+
+export const Button = ({ children, onClick, variant = 'primary' }: ButtonProps) => {
+  return (
+    <button
+      className={\`btn btn-\${variant}\`}
+      onClick={onClick}
+    >
+      {children}
+    </button>
+  );
+};</code></pre>
+    </div>
+  </div>
+
+  <!-- Message 3: Python code without header filename -->
+  <div class="message" data-author="human">
+    <div class="message-header">
+      <span>You</span>
+      <span>5 min ago</span>
+    </div>
+    <p>Create a file called <code>scripts/deploy.py</code> with this content:</p>
+    <div class="code-block">
+      <div class="code-header">
+        <span class="filename">scripts/deploy.py</span>
+        <span class="language">python</span>
+        <button class="copy-btn">Copy</button>
+      </div>
+      <pre><code class="language-python">#!/usr/bin/env python3
+"""Deploy script for RedCoda."""
+
+import subprocess
+import sys
+
+def deploy(environment: str = "staging") -> bool:
+    """Deploy to specified environment."""
+    print(f"Deploying to {environment}...")
+    result = subprocess.run(["npm", "run", "build"], capture_output=True)
+    return result.returncode == 0
+
+if __name__ == "__main__":
+    env = sys.argv[1] if len(sys.argv) > 1 else "staging"
+    success = deploy(env)
+    sys.exit(0 if success else 1)</code></pre>
+    </div>
+  </div>
+
+  <!-- Message 4: Monaco-like editor -->
+  <div class="message" data-author="ai">
+    <div class="message-header">
+      <span>AI Assistant</span>
+      <span>10 min ago</span>
+    </div>
+    <p>Here's the Rust implementation:</p>
+    <div class="monaco-editor" data-language="rust">
+      <div class="view-lines">
+        <div class="view-line"><span>// src/main.rs</span></div>
+        <div class="view-line"><span>use std::collections::HashMap;</span></div>
+        <div class="view-line"><span></span></div>
+        <div class="view-line"><span>fn main() {</span></div>
+        <div class="view-line"><span>    let mut map = HashMap::new();</span></div>
+        <div class="view-line"><span>    map.insert("key", "value");</span></div>
+        <div class="view-line"><span>    println!("{:?}", map.get("key"));</span></div>
+        <div class="view-line"><span>}</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Message 5: Inline code block (multi-line) -->
+  <div class="message" data-author="ai">
+    <div class="message-header">
+      <span>AI Assistant</span>
+      <span>15 min ago</span>
+    </div>
+    <p>Quick CSS snippet:</p>
+    <code class="language-css">.redcoda-badge {
+  position: absolute;
+  top: -20px;
+  right: 0;
+  background: #1a1a1a;
+  color: #e53935;
+  border: 1px solid #e53935;
+  padding: 2px 6px;
+  font-size: 10px;
+  font-family: monospace;
+  border-radius: 3px;
+}</code>
+  </div>
+
+  <!-- Message 6: Duplicate code (should be detected) -->
+  <div class="message" data-author="ai">
+    <div class="message-header">
+      <span>AI Assistant</span>
+      <span>20 min ago</span>
+    </div>
+    <div class="code-block">
+      <div class="code-header">
+        <span class="filename">src/utils/api.js</span>
+        <span class="language">javascript</span>
+        <button class="copy-btn">Copy</button>
+      </div>
+      <pre><code class="language-javascript">// src/utils/api.js
+export async function fetchUser(id) {
+  const response = await fetch(\`/api/users/\${id}\`);
+  if (!response.ok) throw new Error('User not found');
+  return response.json();
+}
+
+export function formatUser(user) {
+  return {
+    id: user.id,
+    name: user.name,
+    email: user.email
+  };
+}</code></pre>
+    </div>
+  </div>
+
+  <!-- Message 7: Same filename, different content (versioning test) -->
+  <div class="message" data-author="ai">
+    <div class="message-header">
+      <span>AI Assistant</span>
+      <span>25 min ago</span>
+    </div>
+    <div class="code-block">
+      <div class="code-header">
+        <span class="filename">config.json</span>
+        <span class="language">json</span>
+        <button class="copy-btn">Copy</button>
+      </div>
+      <pre><code class="language-json">{
+  "name": "redcoda-extractor",
+  "version": "1.0.0",
+  "environment": "development"
+}</code></pre>
+    </div>
+  </div>
+
+  <div class="message" data-author="ai">
+    <div class="message-header">
+      <span>AI Assistant</span>
+      <span>30 min ago</span>
+    </div>
+    <div class="code-block">
+      <div class="code-header">
+        <span class="filename">config.json</span>
+        <span class="language">json</span>
+        <button class="copy-btn">Copy</button>
+      </div>
+      <pre><code class="language-json">{
+  "name": "redcoda-extractor",
+  "version": "2.0.0",
+  "environment": "production",
+  "features": ["deep-scan", "deduplication"]
+}</code></pre>
+    </div>
+  </div>
+
+  <script>
+    // Simulate copy button behavior
+    document.querySelectorAll('.copy-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const code = btn.closest('.code-block').querySelector('code').textContent;
+        navigator.clipboard.writeText(code);
+        btn.textContent = 'Copied!';
+        setTimeout(() => btn.textContent = 'Copy', 1000);
+      });
+    });
+  </script>
+</body>
+</html>

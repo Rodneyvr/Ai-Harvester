@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RedCoda Code Extractor</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="redcoda-popup">
+    <!-- Header -->
+    <header class="popup-header">
+      <div class="logo">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="2" y="2" width="20" height="20" rx="4" fill="#1a1a1a" stroke="#e53935" stroke-width="1.5"/>
+          <path d="M7 7L17 17M17 7L7 17" stroke="#e53935" stroke-width="2" stroke-linecap="round"/>
+          <path d="M12 4V20M4 12H20" stroke="#e53935" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
+          <text x="15" y="18.5" font-family="monospace" font-size="7" font-weight="bold" fill="#e53935"></></text>
+        </svg>
+        <span class="title">RedCoda Code Extractor</span>
+      </div>
+      <button id="rescan-btn" class="icon-btn" title="Rescan page (Alt+Shift+R)">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M23 4v6h-6"></path>
+          <path d="M1 20v-6h6"></path>
+          <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+        </svg>
+      </button>
+    </header>
+
+    <!-- Progress Bar (Deep Scan) -->
+    <div id="progress-section" class="progress-section hidden">
+      <div class="progress-bar-container">
+        <div id="progress-fill" class="progress-fill"></div>
+      </div>
+      <div class="progress-info">
+        <span id="progress-text">Scanning...</span>
+        <button id="stop-scan-btn" class="stop-btn">Stop</button>
+      </div>
+    </div>
+
+    <!-- Filter Row -->
+    <div class="filter-row">
+      <div class="search-wrapper">
+        <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input type="text" id="search-input" placeholder="Search code..." class="search-input">
+      </div>
+      <div id="language-chips" class="language-chips"></div>
+      <label class="ai-toggle">
+        <input type="checkbox" id="ai-only-toggle">
+        <span class="toggle-slider"></span>
+        <span class="toggle-label">AI only</span>
+      </label>
+    </div>
+
+    <!-- Block List -->
+    <div id="block-list" class="block-list">
+      <div id="empty-state" class="empty-state">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.4">
+          <polyline points="16 18 22 12 16 6"></polyline>
+          <polyline points="8 18 2 12 8 6"></polyline>
+        </svg>
+        <p>No code blocks found</p>
+        <button id="deep-scan-btn" class="deep-scan-btn">Deep Scan</button>
+      </div>
+    </div>
+
+    <!-- Footer / Export Actions -->
+    <footer class="popup-footer">
+      <div class="selection-info">
+        <span id="selection-count">0 selected</span>
+        <span id="total-size" class="size-info">0 B</span>
+      </div>
+      <div class="export-actions">
+        <button id="copy-md-btn" class="btn btn-secondary" title="Copy as Markdown">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+          </svg>
+          Copy MD
+        </button>
+        <button id="save-md-btn" class="btn btn-secondary" title="Save as .md file">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="17 8 12 3 7 8"></polyline>
+            <line x1="12" y1="3" x2="12" y2="15"></line>
+          </svg>
+          Save .md
+        </button>
+        <button id="export-zip-btn" class="btn btn-primary" title="Export as ZIP">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="17 8 12 3 7 8"></polyline>
+            <line x1="12" y1="3" x2="12" y2="15"></line>
+          </svg>
+          Export ZIP
+        </button>
+      </div>
+    </footer>
+
+    <!-- Settings Panel (Collapsible) -->
+    <details class="settings-panel">
+      <summary>Export Options</summary>
+      <div class="settings-grid">
+        <label class="setting-item">
+          <span>Folder Layout</span>
+          <select id="layout-select">
+            <option value="paths">Detected Paths</option>
+            <option value="flat">Flat</option>
+            <option value="language">By Language</option>
+            <option value="message">By Message</option>
+          </select>
+        </label>
+        <label class="setting-item">
+          <span>Number Files</span>
+          <input type="checkbox" id="number-files" checked>
+        </label>
+        <label class="setting-item">
+          <span>Include INDEX.md</span>
+          <input type="checkbox" id="include-index" checked>
+        </label>
+        <label class="setting-item">
+          <span>Compression Level</span>
+          <select id="compression-level">
+            <option value="0">Store (Fast)</option>
+            <option value="6" selected>Normal</option>
+            <option value="9">Maximum</option>
+          </select>
+        </label>
+      </div>
+    </details>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

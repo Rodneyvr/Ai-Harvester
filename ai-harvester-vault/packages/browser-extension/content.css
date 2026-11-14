@@ -1,0 +1,43 @@
+/* RedCoda Harvester Vault - Content Script Styles */
+#redcoda-harvest-btn {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 2147483647;
+  padding: 8px 16px;
+  background: #EF4444;
+  color: #FFFFFF;
+  border: none;
+  border-radius: 6px;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+  transition: all 0.2s;
+}
+
+#redcoda-harvest-btn:hover {
+  background: #B91C1C;
+  transform: translateY(-1px);
+}
+
+#redcoda-toast {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 2147483648;
+  padding: 12px 20px;
+  background: #EF4444;
+  color: #FFFFFF;
+  border-radius: 6px;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 13px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}

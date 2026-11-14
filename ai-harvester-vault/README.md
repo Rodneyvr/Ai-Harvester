@@ -1,67 +1,77 @@
-# AI Harvester Vault
+# RedCoda Harvester Vault
 
-Universal AI Skill & Agent Harvester + Secure API Key Vault
+**Universal AI Skill & Agent Harvester + Encrypted API Credential Vault**
 
-A full-stack web application for discovering, harvesting, and managing AI agents, skills, and API credentials — optimized for **100% free-tier deployment** and **Android/Termux** (no Docker required).
+A modular, embeddable full-stack system for discovering, harvesting, and managing AI agents, skills, and API credentials. Built by [RedCoda](https://github.com/Rodneyvr) — *We Build Cool Stuff. You're Welcome.*
+
+![RedCoda Logo](branding/logo.png)
 
 ---
 
 ## Architecture
 
+The project is split into independently installable packages so you can incorporate only what you need into another project:
+
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                    Frontend (Next.js 14)                    │
-│              Android browser / localhost:3000               │
-└─────────────────────────────────────────────────────────────┘
-                              │
-                              ▼
-┌─────────────────────────────────────────────────────────────┐
-│                    Backend (FastAPI + Python)               │
-│              Termux / localhost:8000                        │
-└─────────────────────────────────────────────────────────────┘
-                              │
-                              ▼
-                    ┌─────────────────┐
-                    │  SQLite (file)  │  ← Zero-config, default
-                    │  harvester.db   │     Works on Android
-                    └─────────────────┘
+ai-harvester-vault/
+├── branding/                 # RedCoda brand assets (logo, theme)
+├── packages/
+│   ├── harvester_core/       # 📦 Embeddable Python library (pip-installable)
+│   │   ├── vault.py          # Encrypted credential CRUD
+│   │   ├── agent.py          # Agent CRUD + search
+│   │   ├── scanner.py        # Prompt injection / malicious code detection
+│   │   ├── extractor.py      # LLM-based content extraction
+│   │   ├── normalizer.py     # Deduplication + quality scoring + embeddings
+│   │   ├── discovery.py      # Multi-source URL discovery
+│   │   ├── crawler.py        # Playwright / Crawl4AI crawler
+│   │   └── database.py       # SQLite / PostgreSQL session management
+│   ├── api/                  # FastAPI backend wrapper (localhost:8000)
+│   ├── web/                  # Next.js dashboard (localhost:3000)
+│   └── browser-extension/    # Chrome / Firefox / Edge Manifest V3 extension
+├── apps/
+│   ├── api/                  # Reference FastAPI deployment
+│   └── web/                  # Reference Next.js deployment
+├── docker-compose.yml        # Optional Docker (Postgres + Redis)
+├── setup-android.sh          # Legacy Termux setup
+└── README.md
 ```
 
 ---
 
-## 📱 Android / Termux Setup (No Docker)
+## Quick Start
 
-### Prerequisites
-- [Termux](https://termux.com/) installed from F-Droid or GitHub
-- Storage access granted: `termux-setup-storage`
-
-### One-Command Setup
+### 1. Install the core library (embeddable)
 
 ```bash
-# Clone or copy this project to your phone, then:
-cd ai-harvester-vault
-
-# Make the script executable and run it
-chmod +x setup-android.sh
-bash setup-android.sh
+cd packages/harvester_core
+pip install -e .
 ```
 
-This script will:
-1. Update Termux packages
-2. Install Python, Git, OpenSSL, and build tools
-3. Generate a master encryption key (save this!)
-4. Create your `.env` file with SQLite database config
-5. Install Python dependencies
-6. Initialize the SQLite database
+This gives you `import harvester_core` in any Python project:
 
-### Start the Backend
+```python
+from harvester_core import VaultService, AgentService, SecurityScanner
+
+vault = VaultService(session)
+cred = vault.create(CredentialCreate(
+    name="OPENAI_API_KEY",
+    provider="openai",
+    value="sk-...",
+    environment="production",
+))
+```
+
+### 2. Start the backend API
 
 ```bash
 cd apps/api
-uv run uvicorn main:app --reload --port 8000
+pip install -e .   # or: uv sync
+uvicorn main:app --reload --port 8000
 ```
 
-### Start the Frontend (in a second Termux session)
+API docs: http://localhost:8000/docs
+
+### 3. Start the web dashboard
 
 ```bash
 cd apps/web
@@ -69,194 +79,111 @@ npm install
 npm run dev
 ```
 
-Then open **http://localhost:3000** in your Android browser.
+Dashboard: http://localhost:3000
+
+### 4. Install the browser extension
+
+**Chrome / Edge / Brave:**
+1. Go to `chrome://extensions/`
+2. Enable **Developer mode** (top right)
+3. Click **Load unpacked**
+4. Select `packages/browser-extension/`
+
+**Firefox:**
+1. Go to `about:debugging#/runtime/this-firefox`
+2. Click **Load Temporary Add-on**
+3. Select `packages/browser-extension/manifest.json`
+
+The extension adds:
+- **Popup** — quick vault access + credential copy
+- **Side panel** — full vault + harvester UI inside the browser
+- **Context menu** — right-click any page → "Harvest this page (RedCoda)"
+- **Floating harvest button** — appears on pages you visit
 
 ---
 
-## 🔧 Manual Setup (Step-by-Step)
+## Features
 
-If you prefer to do it manually:
-
-### 1. Install dependencies in Termux
-
-```bash
-pkg update && pkg upgrade -y
-pkg install -y python git openssl make clang ffmpeg
-python -m pip install --upgrade pip uv
-```
-
-### 2. Generate master encryption key
-
-```bash
-openssl rand -base64 32
-```
-
-Copy the output — you'll need it.
-
-### 3. Configure environment
-
-```bash
-cp .env.example .env
-```
-
-Edit `.env` and set:
-- `MASTER_ENCRYPTION_KEY` = the key from step 2
-- `DATABASE_URL=sqlite+aiosqlite:///./harvester.db` (already set by default)
-
-### 4. Install Python dependencies
-
-```bash
-cd apps/api
-uv sync
-```
-
-### 5. Initialize the database
-
-```bash
-python -c "import asyncio; from core.database import init_db; asyncio.run(init_db())"
-```
-
-### 6. Start the backend
-
-```bash
-uv run uvicorn main:app --reload --port 8000
-```
-
-### 7. Start the frontend (new Termux session)
-
-```bash
-cd ../web
-npm install
-npm run dev
-```
-
-Open http://localhost:3000.
+| Feature | Description |
+|---------|-------------|
+| **Universal Harvester** | Discovers AI agents from GitHub, Hugging Face, MCP registry, and web search |
+| **LLM Extraction** | Groq / Gemini / Ollama to identify agents, prompts, and tools |
+| **Deduplication** | Content hashing + vector similarity (pgvector) merges duplicates |
+| **Quality Scoring** | 0–100 automated score based on docs, stars, code completeness |
+| **Security Scanner** | Detects prompt injection, `eval`/`exec`, data exfiltration, shell commands |
+| **Encrypted Vault** | AES-256-GCM at rest; raw secrets never stored in plaintext |
+| **Sandbox** | Isolated code execution with injected vault credentials |
+| **Exporters** | Python, TypeScript, Dockerfile, MCP server, `.env` |
+| **Health Checker** | Verifies API keys, measures latency, checks free-tier quotas |
+| **Browser Extension** | Right-click harvest, side panel vault, popup credential access |
 
 ---
 
-## 🗄️ Database Options
+## RedCoda Brand
+
+- **Company:** RedCoda
+- **Tagline:** *We Build Cool Stuff. You're Welcome.*
+- **Sectors:** APPS / AI / AUTOMATION / WEBSITES / DIGITAL MAGIC
+- **Primary Color:** `#EF4444` (RedCoda red)
+- **Background:** `#0A0A0A` (deep black)
+
+Brand assets are in `branding/`:
+- `branding/logo.png` — RedCoda logo
+- `branding/theme.json` — Brand colors, typography, sectors
+
+---
+
+## Database Options
 
 | Option | Connection String | Best For |
 |--------|-------------------|----------|
-| **SQLite** (default) | `sqlite+aiosqlite:///./harvester.db` | Android, local dev, zero-config |
-| **PostgreSQL** | `postgresql+asyncpg://user:pass@host:port/db` | Termux with PostgreSQL installed |
-| **Supabase** | `postgresql+asyncpg://...` | Cloud free tier |
-| **Neon** | `postgresql+asyncpg://...` | Cloud free tier |
+| **SQLite** (default) | `sqlite+aiosqlite:///./harvester.db` | Local dev, zero-config |
+| **PostgreSQL** | `postgresql+asyncpg://user:pass@host:port/db` | Production, Supabase, Neon |
 
-To switch databases, just change `DATABASE_URL` in `.env` and restart.
+Set `DATABASE_URL` in `.env` (copy from `.env.example`).
 
 ---
 
-## 🔑 Master Encryption Key
+## Embedding in Another Project
 
-Your API credentials are encrypted with **AES-256-GCM** using a master key.
+The `packages/harvester_core/` library is designed to be dropped into any Python project:
 
-- The key is stored in `.env` as `MASTER_ENCRYPTION_KEY`
-- Generate it with: `openssl rand -base64 32`
-- **Never lose this key** — without it, encrypted credentials cannot be decrypted
-- Never commit `.env` to version control
+```python
+# 1. Install
+pip install -e /path/to/ai-harvester-vault/packages/harvester_core
 
----
+# 2. Use
+from harvester_core import VaultService, init_db
 
-## 📦 Project Structure
+# 3. Initialize database
+import asyncio
+asyncio.run(init_db())
 
-```
-ai-harvester-vault/
-├── setup-android.sh              # Android/Termux setup script (no Docker)
-├── .env.example                  # Environment template
-├── README.md                     # This file
-├── docker-compose.yml            # Optional Docker setup (not needed on Android)
-├── scripts/
-│   └── init-pgvector.sql         # PostgreSQL schema (optional)
-├── apps/
-│   ├── api/                      # FastAPI backend
-│   │   ├── main.py               # Application entry point
-│   │   ├── core/
-│   │   │   ├── config.py         # Pydantic settings
-│   │   │   ├── security.py       # AES-256-GCM encryption
-│   │   │   ├── database.py       # SQLAlchemy async (SQLite + Postgres)
-│   │   │   └── queue.py          # Redis queue (optional)
-│   │   ├── models/               # SQLAlchemy models
-│   │   ├── schemas/              # Pydantic schemas
-│   │   ├── services/
-│   │   │   ├── vault.py          # Encrypted credential CRUD
-│   │   │   ├── agent.py          # Agent CRUD + search
-│   │   │   ├── harvester/        # Discovery, crawler, extractor, normalizer, scanner
-│   │   │   ├── sandbox.py        # Isolated code execution
-│   │   │   ├── exporter.py       # Code export (Python/TS/Docker/MCP)
-│   │   │   └── health_checker.py # API key health checks
-│   │   └── api/                  # FastAPI routers
-│   │       ├── vault.py
-│   │       ├── agents.py
-│   │       ├── harvester.py
-│   │       └── sandbox.py
-│   │   └── tests/                # Unit tests
-│   └── web/                      # Next.js frontend
-│       ├── src/
-│       │   ├── app/              # App router pages
-│       │   ├── components/       # React components
-│       │   │   ├── dashboard/    # Shell layout
-│   │   │   ├── harvester/        # Harvester view
-│   │   │   ├── library/          # Agent library view
-│   │   │   ├── vault/            # API vault view
-│   │   │   ├── sandbox/          # Sandbox view
-│   │   │   ├── command-center/   # Dashboard view
-│   │   │   └── ui/               # Primitives (card, button, etc.)
-│       │   └── lib/              # API client, utils
-│       └── package.json
+# 4. Use vault service
+from harvester_core import VaultService, CredentialCreate
+vault = VaultService(session)
+credential = vault.create(CredentialCreate(
+    name="STRIPE_KEY",
+    provider="stripe",
+    value="sk_test_...",
+    environment="production",
+))
 ```
 
----
-
-## 🧪 Running Tests
-
-```bash
-cd apps/api
-uv run pytest tests/ -v
-```
-
-Tests cover:
-- AES-256 encryption/decryption
-- Content hashing and deduplication
-- Malicious code / prompt injection scanning
-- Quality scoring
-- Heuristic extraction
+The FastAPI backend (`packages/api/`) and Next.js frontend (`packages/web/`) can also be used standalone or as reference implementations.
 
 ---
 
-## 🔒 Security Model
+## Security Model
 
-- **AES-256-GCM encryption** for all API credentials
-- Master key stored only in `.env` (never in code)
-- Nonce and auth tag stored separately for integrity
+- **AES-256-GCM** encryption for all credentials at rest
+- Master key stored only in environment variables (`MASTER_ENCRYPTION_KEY`)
+- Nonce and auth tag stored separately for integrity verification
 - Plaintext secrets never logged or returned in list responses
 - Click-to-reveal in UI for controlled access
-- Zero-trust: database can be compromised without exposing secrets
-
----
-
-## 🆘 Troubleshooting
-
-### "Module not found: aiosqlite"
-```bash
-uv pip install aiosqlite
-```
-
-### "Port already in use"
-```bash
-# Find and kill the process
-fuser -k 8000/tcp
-fuser -k 3000/tcp
-```
-
-### Database locked (SQLite)
-SQLite allows only one writer at a time. If you see "database is locked", make sure only one backend process is running.
-
-### Redis connection errors
-Redis is optional. If you don't have it, background crawl jobs run inline. The API works normally without Redis.
 
 ---
 
 ## License
 
-MIT
+MIT — Built by RedCoda

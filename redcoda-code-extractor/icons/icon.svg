@@ -1,0 +1,36 @@
+<svg width="128" height="128" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a1a1a"/>
+      <stop offset="100%" style="stop-color:#0d0d0d"/>
+    </linearGradient>
+    <linearGradient id="redGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#e53935"/>
+      <stop offset="100%" style="stop-color:#ff6b6b"/>
+    </linearGradient>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect x="8" y="8" width="112" height="112" rx="20" fill="url(#bgGrad)" stroke="url(#redGrad)" stroke-width="2"/>
+
+  <!-- Code streaks -->
+  <g stroke="url(#redGrad)" stroke-width="2" stroke-linecap="round" opacity="0.8" filter="url(#glow)">
+    <line x1="25" y1="35" x2="103" y2="35"/>
+    <line x1="25" y1="55" x2="95" y2="55" stroke-dasharray="8,4"/>
+    <line x1="25" y1="75" x2="103" y2="75"/>
+    <line x1="35" y1="95" x2="93" y2="95" stroke-dasharray="6,6"/>
+  </g>
+
+  <!-- R letter -->
+  <text x="64" y="72" font-family="monospace" font-size="48" font-weight="900" fill="url(#redGrad)" text-anchor="middle" dominant-baseline="middle" filter="url(#glow)">R</text>
+
+  <!-- </> tag -->
+  <text x="64" y="100" font-family="monospace" font-size="16" font-weight="700" fill="#e53935" text-anchor="middle" dominant-baseline="middle"></></text>
+</svg>

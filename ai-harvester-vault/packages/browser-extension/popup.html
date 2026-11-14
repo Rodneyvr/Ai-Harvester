@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RedCoda Harvester Vault</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --primary: #EF4444;
+      --primary-dark: #B91C1C;
+      --bg: #0A0A0A;
+      --surface: #171717;
+      --text: #F8FAFC;
+      --muted: #71717A;
+      --border: #27272A;
+    }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      width: 320px;
+      height: 420px;
+      overflow: hidden;
+    }
+    .header {
+      padding: 16px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .logo {
+      width: 32px;
+      height: 32px;
+      border-radius: 6px;
+    }
+    .title {
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+    .title .brand { color: var(--primary); }
+    .title .coda { color: var(--text); }
+    .status {
+      margin-left: auto;
+      font-size: 11px;
+      padding: 4px 8px;
+      border-radius: 4px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+    }
+    .status.online { color: #22C55E; border-color: #22C55E; }
+    .status.offline { color: #EF4444; border-color: #EF4444; }
+    .content { padding: 16px; display: flex; flex-direction: column; gap: 12px; height: calc(100% - 64px); overflow-y: auto; }
+    .section-title {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+    .btn-group { display: flex; gap: 8px; }
+    button {
+      flex: 1;
+      padding: 10px 14px;
+      border: none;
+      border-radius: 6px;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    button.primary {
+      background: var(--primary);
+      color: #FFFFFF;
+    }
+    button.primary:hover { background: var(--primary-dark); }
+    button.outline {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    button.outline:hover { background: var(--surface); }
+    button.secondary {
+      background: var(--surface);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    button.secondary:hover { background: #27272A; }
+    button:disabled { opacity: 0.5; cursor: not-allowed; }
+    .credential-item {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+    }
+    .credential-name { font-weight: 600; }
+    .credential-provider { font-size: 11px; color: var(--muted); }
+    .reveal-btn {
+      width: 32px;
+      height: 32px;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+    }
+    .empty {
+      text-align: center;
+      color: var(--muted);
+      font-size: 13px;
+      padding-top: 40px;
+    }
+    .divider {
+      height: 1px;
+      background: var(--border);
+      margin: 8px 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <img src="../icons/icon-48.svg" alt="RedCoda" class="logo">
+    <div class="title"><span class="brand">RED</span><span class="coda">CODA</span></div>
+    <div id="api-status" class="status offline">OFFLINE</div>
+  </div>
+
+  <div class="content">
+    <div class="section-title">Quick Actions</div>
+    <div class="btn-group">
+      <button class="primary" id="btn-harvest">Harvest Page</button>
+      <button class="outline" id="btn-sidepanel">Open Vault</button>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="section-title">Recent Credentials</div>
+    <div id="credential-list">
+      <div class="empty">No credentials found. Add keys in the web dashboard.</div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="section-title">Tools</div>
+    <div class="btn-group">
+      <button class="secondary" id="btn-dashboard">Dashboard</button>
+      <button class="secondary" id="btn-settings">Settings</button>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

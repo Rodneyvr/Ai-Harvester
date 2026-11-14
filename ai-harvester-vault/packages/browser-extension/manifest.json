@@ -1,0 +1,61 @@
+{
+  "manifest_version": 3,
+  "name": "RedCoda Harvester Vault",
+  "version": "1.0.0",
+  "description": "Universal AI agent harvester and encrypted API credential vault by RedCoda",
+  "author": "RedCoda",
+  "homepage_url": "https://github.com/Rodneyvr/Ai-Harvester",
+
+  "icons": {
+    "16": "icons/icon-16.svg",
+    "48": "icons/icon-48.svg",
+    "128": "icons/icon-128.svg"
+  },
+
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon-16.svg",
+      "48": "icons/icon-48.svg"
+    },
+    "default_title": "RedCoda Harvester Vault"
+  },
+
+  "side_panel": {
+    "default_path": "sidepanel.html"
+  },
+
+  "permissions": [
+    "storage",
+    "tabs",
+    "sidePanel",
+    "contextMenus",
+    "notifications"
+  ],
+
+  "host_permissions": [
+    "http://localhost:8000/*",
+    "https://localhost:8000/*"
+  ],
+
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "css": ["content.css"],
+      "run_at": "document_idle"
+    }
+  ],
+
+  "web_accessible_resources": [
+    {
+      "resources": ["icons/icon-128.png", "branding/logo.png"],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "company": "RedCoda",
+  "tagline": "We Build Cool Stuff. You're Welcome.",
+  "sectors": ["APPS", "AI", "AUTOMATION", "WEBSITES", "DIGITAL MAGIC"],
+  "colors": {
+    "primary": "#EF4444",
+    "primaryDark": "#B91C1C",
+    "secondary": "#F8FAFC",
+    "accent": "#FFFFFF",
+    "background": "#0A0A0A",
+    "surface": "#171717",
+    "muted": "#71717A",
+    "success": "#22C55E",
+    "warning": "#F59E0B",
+    "error": "#EF4444"
+  },
+  "typography": {
+    "heading": "Inter, -apple-system, BlinkMacSystemFont, sans-serif",
+    "body": "Inter, -apple-system, BlinkMacSystemFont, sans-serif",
+    "mono": "JetBrains Mono, Fira Code, monospace"
+  },
+  "logo": {
+    "file": "logo.png",
+    "description": "RedCoda stylized R with digital glitch circuit motif"
+  }
+}
